@@ -43,7 +43,7 @@
                 <div class="navigation-wrap">
                     <nav role="navigation" class="navigation-items w-nav-menu">
                         <a href="#" aria-current="page" class="navigation-item home-img w-nav-link w--current"></a>
-                        <a href="#" aria-current="page" class="navigation-item box-img w-nav-link w--current"></a>
+                        <a id="add-task-2" href="#" aria-current="page" class="navigation-item box-img w-nav-link w--current"></a>
                         <a href="#" aria-current="page" class="navigation-item settings-img w-nav-link w--current"></a>
                     </nav>
                 </div>
@@ -51,8 +51,8 @@
         </div>
         <div class="section">
             <div class="container">
-                <div class="intro-wrap">
-                    <div>
+                <div class="intro-wrap" id="intro-wrap">
+                    <div id="tasks">
                         <div class="task-block w-clearfix">
                             <div class="checkbox"></div>
                             <div class="task-name">🔥 Finish Leetcode Daily</div>
@@ -81,28 +81,22 @@
                     </div>
                 </div>
             </div>
-            <div class="new-task-section" id="new-task-section">
-                <a href="#" id="cancel-btn" class="link-block-3 w-inline-block"></a>
+            <div id="new-task-section" class="new-task-section w-clearfix">
+                <a id="cancel-btn" href="#" class="link-block-3 w-inline-block"></a>
                 <h1 class="heading">Add Note</h1>
                 <div class="task-field">
                     <div>Note Name</div>
-                    <div class="task-block w-clearfix">
-                        <div class="task-name">Math solver</div>
-                    </div>
+                    <input class="text-field-2 w-input" maxlength="256" name="task-name" data-name="task-name" placeholder="Math Solver" type="text" id="task-name">
                 </div>
                 <div class="task-field">
                     <div>Source</div>
-                    <div class="task-block w-clearfix">
-                        <div class="task-name">https://www.wolframalpha.com/</div>
-                    </div>
+                    <input class="text-field-2 w-input" maxlength="256" name="task-src" data-name="task-src" placeholder="https://www.wolframalpha.com" type="text" id="task-src">
                 </div>
                 <div class="task-field">
                     <div>Description (optional)</div>
-                    <div class="task-block w-clearfix">
-                        <div class="task-name">The &quot;Math Solver App (Wolfram)&quot;attribute defines the use of the Wolfram Math Solver application for solving mathematical problems. Wolfram Math Solver is a powerful tool that offers advanced capabilities in symbolic computation and analytical mathematics.</div>
-                    </div>
+                    <textarea placeholder="The Wolfram Math Solver application for solving mathematical problems. Wolfram Math Solver is a powerful tool that offers advanced capabilities in symbolic computation and analytical mathematics." maxlength="5000" id="task-desc" name="task-desc" data-name="task-desc" class="textarea w-input"></textarea>
                 </div>
-                <a href="#" class="button-2 w-button">Create Note</a>
+                <a href="#" class="button-2 w-button" id="add-task-btn">Create Note</a>
             </div>
         </div>
         <div class="footer-wrap">
