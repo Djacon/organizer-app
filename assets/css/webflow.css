@@ -3186,9 +3186,7 @@ figcaption {
 
   .section {
     height: 100%;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
+    margin: 100px 0 0;
     padding-bottom: 0;
   }
 
@@ -3220,6 +3218,8 @@ figcaption {
 
   .navigation {
     padding: 20px 30px;
+    position: -webkit-sticky;
+    position: sticky;
   }
 
   .intro-wrap {
