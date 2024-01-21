@@ -2978,6 +2978,10 @@ figcaption {
   display: none;
 }
 
+.container-2, .new-task-section {
+  display: none;
+}
+
 @media screen and (max-width: 991px) {
   .styleguide-block {
     text-align: center;
@@ -3329,6 +3333,9 @@ figcaption {
   }
 
   .task-block {
+    margin-top: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     transform: translate(0);
   }
 
@@ -3410,6 +3417,70 @@ figcaption {
     flex-direction: row;
     justify-content: space-between;
     display: flex;
+  }
+
+  .container-2 {
+    width: 100%;
+    height: 100%;
+    max-width: 1140px;
+    display: block;
+    position: fixed;
+  }
+
+  .new-task-section {
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    background-color: #222;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    padding: 30px;
+    transition: top .8s cubic-bezier(.25, .1, .24, 1.246);
+    display: block;
+    position: fixed;
+    top: 100vh;
+  }
+
+  .new-task-section.show-section {
+    position: absolute;
+    top: 150px;
+  }
+
+  .heading {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 50px;
+    margin-left: 15px;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 40px;
+  }
+
+  .link-block-3 {
+    width: 28px;
+    height: 28px;
+    float: right;
+    background-image: url("../svg/exit.svg");
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: 28px 28px;
+    padding-bottom: 0;
+    padding-right: 0;
+  }
+
+  .button-2 {
+    width: 100%;
+    text-align: center;
+    background-color: #333;
+    border-radius: 20px;
+    font-weight: 400;
+    transition: color .3s, background-color .3s, opacity .2s;
+    position: relative;
+  }
+
+  .button-2:hover {
+    color: #67b4ff;
+    background-color: #193f64;
   }
 }
 
@@ -3509,6 +3580,10 @@ figcaption {
 
   .link-block-2.w--current {
     background-image: url("../svg/home.svg");
+  }
+
+  .new-task-section {
+    transition: top .8s cubic-bezier(.25, .1, .199, 1.188);
   }
 }
 
