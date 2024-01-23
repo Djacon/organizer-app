@@ -198,27 +198,27 @@ td, th {
 }
 
 .w-icon-slider-right:before {
-  content: "оЂ";
+  content: "";
 }
 
 .w-icon-slider-left:before {
-  content: "оЃ";
+  content: "";
 }
 
 .w-icon-nav-menu:before {
-  content: "о‚";
+  content: "";
 }
 
 .w-icon-arrow-down:before, .w-icon-dropdown-toggle:before {
-  content: "оѓ";
+  content: "";
 }
 
 .w-icon-file-upload-remove:before {
-  content: "о¤Ђ";
+  content: "";
 }
 
 .w-icon-file-upload-icon:before {
-  content: "о¤ѓ";
+  content: "";
 }
 
 * {
@@ -2913,6 +2913,10 @@ figcaption {
   line-height: 25px;
 }
 
+.task-name.finished-task {
+  text-decoration: line-through;
+}
+
 .link-block {
   width: 24px;
   height: 24px;
@@ -3222,7 +3226,6 @@ figcaption {
     width: 100%;
     height: 100%;
     border-radius: 30px 30px 0 0;
-    margin-bottom: 80px;
   }
 
   .work-experience-grid {
@@ -3270,7 +3273,8 @@ figcaption {
     align-items: center;
     padding-top: 20px;
     padding-bottom: 20px;
-    position: fixed;
+    position: -webkit-sticky;
+    position: sticky;
     bottom: 0;
     left: 0;
     right: 0;
