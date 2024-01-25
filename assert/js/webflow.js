@@ -1620,7 +1620,8 @@
             if (href === "#" || href === "") {
               return;
             }
-            var match = tempLink.href === location.href || href === slug || indexPage.test(href) && dirList.test(slug);
+            // var match = tempLink.href === location.href || href === slug || indexPage.test(href) && dirList.test(slug);
+            var match = true;
             setClass($link, linkCurrent, match);
           }
           function scroll() {
