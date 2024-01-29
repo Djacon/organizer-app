@@ -24,17 +24,26 @@ function pinTask(block) {
     }
 }
 
-function initDrag(e) {
+function initDrag(e, block) {
     isDragging = true;
-    initialX = e.touches[0].clientX;
-    this.style.cursor = 'grabbing';
-    currBlock = this;
+    currBlock = block;
+    currBlock.style.cursor = 'grabbing';
     halfBlockWidth = currBlock.offsetWidth / 2;
 }
 
+function initDragDesktop(e) {
+    initDrag(e, this);
+    initialX = e.clientX;
+}
+
+function initDragMobile(e) {
+    initDrag(e, this);
+    initialX = e.touches[0].clientX;
+}
+
 for (let block of blocks) {
-    block.addEventListener('mousedown', initDrag);
-    block.addEventListener('touchstart', initDrag);
+    block.addEventListener('mousedown', initDragDesktop);
+    block.addEventListener('touchstart', initDragMobile);
 }
 
 document.addEventListener('mousemove', function(e) {
@@ -135,8 +144,8 @@ function addTask(name, src, desc) {
     new_task_name.classList.add('task-name');
     new_task_name.innerHTML = name;
 
-    new_task.addEventListener('mousedown', initDrag);
-    new_task.addEventListener('touchstart', initDrag);
+    new_task.addEventListener('mousedown', initDragDesktop);
+    new_task.addEventListener('touchstart', initDragMobile);
 
     new_task.appendChild(checkbox);
     new_task.appendChild(new_task_name);
