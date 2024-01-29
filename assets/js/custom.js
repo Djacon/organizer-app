@@ -4,23 +4,86 @@ window.addEventListener('beforeunload', (event) => {
     return ''; 
 });
 
-localStorage.getItem('')
-
 const tasks = document.getElementById('tasks');
 const blocks = document.getElementsByClassName('task-block');
 
-for (let block of blocks) {
-    checkbox = block.children[0];
-    checkbox.addEventListener('click', function() {
-        if (this.classList.contains('active-btn')) {
-            this.classList.remove('active-btn');
-            block.children[1].classList.remove('finished-task');
-        } else {
-            this.classList.add('active-btn');
-            block.children[1].classList.add('finished-task');
-        }
-    });
+var isDragging = false;
+var initialX;
+var currBlock;
+var halfBlockWidth;
+
+function pinTask(block) {
+    let checkbox = block.children[0];
+    let task_header = block.children[1]
+    if (checkbox.classList.contains('active-btn')) {
+        checkbox.classList.remove('active-btn');
+        task_header.classList.remove('finished-task');
+    } else {
+        checkbox.classList.add('active-btn');
+        task_header.classList.add('finished-task');
+    }
 }
+
+function initDrag(e) {
+    isDragging = true;
+    initialX = e.touches[0].clientX;
+    this.style.cursor = 'grabbing';
+    currBlock = this;
+    halfBlockWidth = currBlock.offsetWidth / 2;
+}
+
+for (let block of blocks) {
+    block.addEventListener('mousedown', initDrag);
+    block.addEventListener('touchstart', initDrag);
+}
+
+document.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+        let newX = e.clientX - initialX;
+        newX = Math.min(Math.max(newX, -halfBlockWidth), halfBlockWidth);
+        currBlock.style.transform = `translateX(${newX}px)`;
+    }
+});
+
+document.addEventListener('mouseup', function(e) {
+    if (isDragging) {
+        isDragging = false;
+        currBlock.style.transform = ``;
+
+        let newX = e.clientX - initialX;
+        newX = Math.min(Math.max(newX, -halfBlockWidth), halfBlockWidth);
+        if (newX == halfBlockWidth) {
+            pinTask(currBlock);
+        } else if (newX == -halfBlockWidth) {
+            tasks.removeChild(currBlock);
+        }
+        currBlock.style.cursor = 'grab';
+    }
+});
+
+document.addEventListener('touchmove', function(e) {
+    if (isDragging) {
+        let newX = e.touches[0].clientX - initialX;
+        newX = Math.min(Math.max(newX, -halfBlockWidth), halfBlockWidth);
+        currBlock.style.transform = `translateX(${newX}px)`;
+    }
+});
+
+document.addEventListener('touchend', function(e) {
+    if (isDragging) {
+        isDragging = false;
+        currBlock.style.transform = ``;
+
+        let newX = e.changedTouches[0].clientX - initialX;
+        newX = Math.min(Math.max(newX, -halfBlockWidth), halfBlockWidth);
+        if (newX == halfBlockWidth) {
+            pinTask(currBlock);
+        } else if (newX == -halfBlockWidth) {
+            tasks.removeChild(currBlock);
+        }
+        currBlock.style.cursor = 'grab';
+    }
+});
 
 // const maxWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
@@ -58,38 +121,34 @@ const task_src  = document.getElementById('task-src');
 const task_desc = document.getElementById('task-desc');
 
 function addTask(name, src, desc) {
-    if (!name || !src) return;
+    if (!name) return;
 
     task_name.value = ''; task_src.value = ''; task_desc.value = '';
-    
+
     let new_task = document.createElement('div');
     new_task.classList.add('task-block', 'w-clearfix');
     
     let checkbox = document.createElement('div');
     checkbox.classList.add('checkbox');
-    
+
     let new_task_name = document.createElement('div');
     new_task_name.classList.add('task-name');
     new_task_name.innerHTML = name;
-    
-    checkbox.addEventListener('click', function() {
-        if (this.classList.contains('active-btn')) {
-            this.classList.remove('active-btn');
-            new_task_name.classList.remove('finished-task');
-        } else {
-            this.classList.add('active-btn');
-            new_task_name.classList.add('finished-task');
-        }
-    });
-    
-    let new_task_src = document.createElement('a');
-    new_task_src.classList.add('link-block', 'w-inline-block');
-    new_task_src.href = src;
-    new_task_src.target = '_blank';
-    
+
+    new_task.addEventListener('mousedown', initDrag);
+    new_task.addEventListener('touchstart', initDrag);
+
     new_task.appendChild(checkbox);
     new_task.appendChild(new_task_name);
-    new_task.appendChild(new_task_src);
+
+    if (src) {
+        let new_task_src = document.createElement('a');
+        new_task_src.classList.add('link-block', 'w-inline-block');
+        new_task_src.href = src;
+        new_task_src.target = '_blank';
+        new_task.appendChild(new_task_src);
+    }
+
     tasks.appendChild(new_task);
 
     intro_wrap.classList.remove('hide-section');
