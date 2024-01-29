@@ -2593,6 +2593,7 @@ figcaption {
   margin-bottom: 0;
   padding: 30px;
   transition: opacity .5s;
+  overflow: hidden;
   box-shadow: 6px 7px 5px rgba(0, 0, 0, .2);
 }
 
@@ -2940,6 +2941,7 @@ figcaption {
 }
 
 .task-block {
+  cursor: grab;
   background-color: rgba(1, 0, 5, .47);
   border-radius: 20px;
   flex-direction: row;
@@ -2965,7 +2967,6 @@ figcaption {
   height: 13px;
   min-height: 13px;
   min-width: 13px;
-  cursor: pointer;
   background-color: #fff;
   border-radius: 100%;
   margin-right: 10px;
@@ -3034,6 +3035,7 @@ figcaption {
   background-color: #333;
   border-radius: 20px;
   transition: color .3s, background-color .3s, opacity .2s;
+  position: relative;
 }
 
 .button-2:hover {
@@ -3777,4 +3779,3 @@ figcaption {
 }
 
 textarea {resize: none;}
-#intro-wrap {overflow: hidden;}

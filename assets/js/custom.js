@@ -27,12 +27,12 @@ function pinTask(block) {
 function initDrag(e, block) {
     isDragging = true;
     currBlock = block;
-    currBlock.style.cursor = 'grabbing';
     halfBlockWidth = currBlock.offsetWidth / 2;
 }
 
 function initDragDesktop(e) {
     initDrag(e, this);
+    this.style.cursor = 'grabbing';
     initialX = e.clientX;
 }
 
@@ -65,6 +65,7 @@ document.addEventListener('mouseup', function(e) {
             pinTask(currBlock);
         } else if (newX == -halfBlockWidth) {
             tasks.removeChild(currBlock);
+            updateStorage();
         }
         currBlock.style.cursor = 'grab';
     }
@@ -89,6 +90,7 @@ document.addEventListener('touchend', function(e) {
             pinTask(currBlock);
         } else if (newX == -halfBlockWidth) {
             tasks.removeChild(currBlock);
+            updateStorage();
         }
         currBlock.style.cursor = 'grab';
     }
@@ -122,6 +124,7 @@ add_task_btn.addEventListener('click', function() {
     let src = task_src.value.trim();
     let desc = task_desc.value.trim();
     addTask(name, src, desc);
+    updateStorage();
 });
 
 const task_adder = document.getElementById('new-task-section');
@@ -162,4 +165,34 @@ function addTask(name, src, desc) {
 
     intro_wrap.classList.remove('hide-section');
     task_adder.classList.remove('show-section');
+}
+
+let notes = localStorage['notes'];
+if (!notes || notes === '[]') {
+    notes = [{name: '🔥 Finish Leetcode Daily',    src: 'https://leetcode.com/problemset/', desc: ''},
+             {name: '👨‍💻 Open LocalHost',           src: 'http://localhost:8080/', desc: ''},
+             {name: '💬 Talk with ChatGPT',        src: 'https://chat.openai.com/', desc: ''},
+             {name: '🌍 Translate Some Text',      src: 'https://www.deepl.com/translator#en/ru/some%20text', desc: ''},
+             {name: '📝 Summarize Youtube Videos', src: 'https://youtubesummarizer.com/', desc: ''}]
+    localStorage['notes'] = JSON.stringify(notes);
+} else {
+    notes = JSON.parse(notes);
+}
+
+for (note of notes) {
+    addTask(note.name, note.src, note.desc);
+}
+
+function updateStorage() {
+    let notes = [];
+    for (let block of blocks) {
+        let task_header = block.children[1].innerHTML;
+        let task_src = '';
+        if (block.children.length > 2) { // have source
+            task_src = block.children[2].href;
+        }
+        notes.push({name: task_header, src: task_src, desc: ''});
+    }
+    localStorage['notes'] = JSON.stringify(notes);
+    console.log(`Storage Updated! Size - ${notes.length}`)
 }
