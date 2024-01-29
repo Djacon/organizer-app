@@ -3435,7 +3435,7 @@ figcaption {
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     padding: 30px;
-    transition: top .8s cubic-bezier(.25, .1, .24, 1.246);
+    transition: transform .8s cubic-bezier(.25, .1, .24, 1.246);
     display: block;
     position: fixed;
     top: 100vh;
@@ -3443,7 +3443,7 @@ figcaption {
 
   .new-task-section.show-section {
     position: absolute;
-    top: 150px;
+    transform: translate(0, -80%);
   }
 
   .heading {
@@ -3580,10 +3580,6 @@ figcaption {
 
   .link-block-2.w--current {
     background-image: url("../svg/home.svg");
-  }
-
-  .new-task-section {
-    transition: top .8s cubic-bezier(.25, .1, .199, 1.188);
   }
 }
 
