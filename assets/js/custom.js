@@ -63,6 +63,7 @@ document.addEventListener('mouseup', function(e) {
         newX = Math.min(Math.max(newX, -halfBlockWidth), halfBlockWidth);
         if (newX == halfBlockWidth) {
             pinTask(currBlock);
+            editNoteStorage(currBlock);
         } else if (newX == -halfBlockWidth) {
             tasks.removeChild(currBlock);
             updateStorage();
@@ -88,6 +89,7 @@ document.addEventListener('touchend', function(e) {
         newX = Math.min(Math.max(newX, -halfBlockWidth), halfBlockWidth);
         if (newX == halfBlockWidth) {
             pinTask(currBlock);
+            editNoteStorage(currBlock);
         } else if (newX == -halfBlockWidth) {
             tasks.removeChild(currBlock);
             updateStorage();
@@ -122,20 +124,21 @@ const add_task_btn = document.getElementById('add-task-btn');
 add_task_btn.addEventListener('click', function() {
     let name = task_name.value.trim();
     let src = task_src.value.trim();
-    let desc = task_desc.value.trim();
-    addTask(name, src, desc);
-    updateStorage();
+    let type = task_type.value.trim();
+    if (addTask(name, src, type)) {
+        updateStorage();
+    }
 });
 
 const task_adder = document.getElementById('new-task-section');
 const task_name = document.getElementById('task-name');
 const task_src  = document.getElementById('task-src');
-const task_desc = document.getElementById('task-desc');
+const task_type = document.getElementById('task-type');
 
-function addTask(name, src, desc) {
-    if (!name) return;
+function addTask(name, src, type, finished=false) {
+    if (!name) return false;
 
-    task_name.value = ''; task_src.value = ''; task_desc.value = '';
+    task_name.value = ''; task_src.value = ''; task_type.value = '';
 
     let new_task = document.createElement('div');
     new_task.classList.add('task-block', 'w-clearfix');
@@ -161,38 +164,72 @@ function addTask(name, src, desc) {
         new_task.appendChild(new_task_src);
     }
 
+    if (finished) {
+        pinTask(new_task);
+    }
+
     tasks.appendChild(new_task);
 
     intro_wrap.classList.remove('hide-section');
     task_adder.classList.remove('show-section');
+    return true;
 }
 
 let notes = localStorage['notes'];
 if (!notes || notes === '[]') {
-    notes = [{name: '🔥 Finish Leetcode Daily',    src: 'https://leetcode.com/problemset/', desc: ''},
-             {name: '👨‍💻 Open LocalHost',           src: 'http://localhost:8080/', desc: ''},
-             {name: '💬 Talk with ChatGPT',        src: 'https://chat.openai.com/', desc: ''},
-             {name: '🌍 Translate Some Text',      src: 'https://www.deepl.com/translator#en/ru/some%20text', desc: ''},
-             {name: '📝 Summarize Youtube Videos', src: 'https://youtubesummarizer.com/', desc: ''}]
-    localStorage['notes'] = JSON.stringify(notes);
+    notes = [{name: '🔥 Finish Leetcode Daily',    src: 'https://leetcode.com/problemset/',                   type: ''},
+             {name: '👨‍💻 Open LocalHost',           src: 'http://localhost:8080/',                             type: ''},
+             {name: '💬 Talk with ChatGPT',        src: 'https://chat.openai.com/',                           type: ''},
+             {name: '🌍 Translate Some Text',      src: 'https://www.deepl.com/translator#en/ru/some%20text', type: ''},
+             {name: '📝 Summarize Youtube Videos', src: 'https://youtubesummarizer.com/',                     type: ''}]
 } else {
     notes = JSON.parse(notes);
 }
 
+let CURR_DATE = new Date().toLocaleDateString("en-US");
 for (note of notes) {
-    addTask(note.name, note.src, note.desc);
+    if (note.finished) {
+        if (note.last_date) {
+            let day_changed = (CURR_DATE !== new Date(note.last_date).toLocaleDateString("en-US"));
+            if (day_changed) {
+                note.finished = false;
+                console.log('Day Changed! New day - New task');
+            }
+        }
+        note.last_date = CURR_DATE;
+    }
+    addTask(note.name, note.src, note.type, note.finished);
 }
+
+localStorage['notes'] = JSON.stringify(notes);
+
 
 function updateStorage() {
     let notes = [];
     for (let block of blocks) {
+        let finished = block.children[0].classList.contains('active-btn');
         let task_header = block.children[1].innerHTML;
         let task_src = '';
         if (block.children.length > 2) { // have source
             task_src = block.children[2].href;
         }
-        notes.push({name: task_header, src: task_src, desc: ''});
+        notes.push({name: task_header, src: task_src, type: '', finished: finished});
     }
     localStorage['notes'] = JSON.stringify(notes);
     console.log(`Storage Updated! Size - ${notes.length}`)
+}
+
+function editNoteStorage(currBlock) {
+    let notes = JSON.parse(localStorage['notes']);
+    let task_header = currBlock.children[1].innerHTML;
+    for (let i = 0; i < notes.length; i++) {
+        let note_header = notes[i].name;
+        if (note_header === task_header) {
+            notes[i].finished = !notes[i].finished;
+            break;
+        }
+    }
+
+    localStorage['notes'] = JSON.stringify(notes);
+    console.log(`Storage was Edit!`);
 }

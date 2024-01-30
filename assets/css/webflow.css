@@ -3779,3 +3779,4 @@ figcaption {
 }
 
 textarea {resize: none;}
+#intro-wrap {user-select: none;}
