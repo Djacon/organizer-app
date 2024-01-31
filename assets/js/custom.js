@@ -110,8 +110,13 @@ task_adder_btn.addEventListener('click', function() {
 
 const task_adder_btn_2 = document.getElementById('add-task-2');
 task_adder_btn_2.addEventListener('click', function() {
-    intro_wrap.classList.add('hide-section');
-    task_adder.classList.add('show-section');
+    if (!intro_wrap.classList.contains('hide-section')) {
+        intro_wrap.classList.add('hide-section');
+        task_adder.classList.add('show-section');
+    } else {
+        intro_wrap.classList.remove('hide-section');
+        task_adder.classList.remove('show-section');
+    }
 });
 
 const task_close_btn = document.getElementById('cancel-btn');
