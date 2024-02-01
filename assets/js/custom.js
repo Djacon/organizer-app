@@ -265,7 +265,8 @@ function addTask(name, src, type, block=tasks, finished=false) {
 const OTHER = '%OTHER%';
 
 let NOTES = localStorage['notes'];
-if (!NOTES || NOTES === '{}') {
+
+if (!NOTES || NOTES === '{}' || !isObject(NOTES) ) {
     NOTES = {
         '🛢️ Daily Tasks': {
             '🔥 Finish Leetcode Daily': {src: 'https://leetcode.com/problemset/', type: 'basic', finished: true},
@@ -276,13 +277,10 @@ if (!NOTES || NOTES === '{}') {
             '🌍 Translate Some Text': {src: 'https://www.deepl.com/translator#en/ru/some%20text', type: 'basic'},
             '📝 Summarize Youtube Videos': {src: 'https://youtubesummarizer.com/',                type: 'basic'},
         },
-        '💹 Сrypto Links': {
-            '🍉 Arbuz': {src: 'https://t.me/wmclick_bot/click', type: 'basic'} // need to delete
-        },
+        '💹 Сrypto Links': {},
         [OTHER]: {
             '⌚ Start Timer':     {src: 'https://onlinetimer.ru/#!/', type: 'basic'},
             '🎨 Yandex Images':   {src: 'https://yandex.ru/images/',  type: 'basic'},
-            '📊 Check Out Excel': {src: 'https://docs.google.com/spreadsheets/d/1AhSWk6SeviV5QItrO1zD54VoN-t3yhjo-k3DN3qY7K0/edit?usp=sharing', type: 'basic'} // need to delete
         }
     }
 } else {
@@ -368,4 +366,14 @@ function isEmpty(obj) {
         }
     }
     return true;
+}
+
+
+function isObject(obj) {
+    try {
+        let json = JSON.parse(obj);
+        return typeof json === 'object' && !Array.isArray(json) && json !== null;
+    } catch {
+        return false;
+    }
 }
