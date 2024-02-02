@@ -2996,7 +2996,7 @@ figcaption {
   margin-left: auto;
   margin-right: auto;
   padding: 30px;
-  transition: transform .8s cubic-bezier(.25, .1, .24, 1.246);
+  transition: transform .8s cubic-bezier(.25, .1, .24, 1.25);
   display: block;
   position: fixed;
   top: 100vh;
@@ -3006,7 +3006,7 @@ figcaption {
 
 .new-task-section.show-section {
   position: absolute;
-  transform: translate(0, -85vh);
+  transform: translate(0, -80vh);
 }
 
 .heading {
@@ -3780,3 +3780,4 @@ figcaption {
 
 textarea {resize: none;}
 #intro-wrap {user-select: none;}
+body::-webkit-scrollbar {width: 0;}
