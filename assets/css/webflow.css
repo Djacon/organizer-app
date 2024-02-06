@@ -3787,6 +3787,6 @@ figcaption {
 }
 
 #intro-wrap {user-select: none;}
-body::-webkit-scrollbar {width: 0;}
-#new-task-section::-webkit-scrollbar {width: 0;}
-#intro-wrap::-webkit-scrollbar {width: 0;}
+body::-webkit-scrollbar {display: none;}
+#new-task-section::-webkit-scrollbar {display: none;}
+#intro-wrap::-webkit-scrollbar {display: none;}
