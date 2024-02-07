@@ -44,19 +44,16 @@ function initDragMobile(e) {
 }
 
 function showGroup(group_title) {
-    group_section.children[1].innerHTML = group_title;
     intro_wrap.classList.add('hide-section');
     group_section.classList.add('show-section');
 
+    group_section.children[1].innerHTML = group_title;
     group_tasks.innerHTML = '';
-    for (let note of notes) {
-        if (note.group_title === group_title) {
-            for (let group_note of note.group_notes) {
-                addTask(group_note.name, group_note.src, group_note.type, group_tasks, group_note.finished);
-            }
-        }
+
+    let group = NOTES[group_title];
+    for (let note in group) {
+        addTask(note, group[note].src, group[note].type, group_tasks, group[note].finished);
     }
-    console.log(group_tasks);
 }
 
 for (let block of blocks) {
@@ -91,8 +88,14 @@ document.addEventListener('mouseup', function(e) {
             pinTask(currBlock);
             editNoteStorage(currBlock);
         } else if (newX == -halfBlockWidth) {
-            tasks.removeChild(currBlock);
-            updateStorage();
+            updateStorage(op='rm', info=currBlock);
+            let parentNode = currBlock.parentNode.parentNode;
+            let group_title = (parentNode.id === 'intro-wrap') ? OTHER: parentNode.children[1].innerHTML;
+            if (group_title === OTHER) {
+                tasks.removeChild(currBlock);
+            } else {
+                group_tasks.removeChild(currBlock);
+            }
         }
         currBlock.style.cursor = 'grab';
     }
@@ -117,8 +120,14 @@ document.addEventListener('touchend', function(e) {
             pinTask(currBlock);
             editNoteStorage(currBlock);
         } else if (newX == -halfBlockWidth) {
-            tasks.removeChild(currBlock);
-            updateStorage();
+            updateStorage(op='rm', info=currBlock);
+            let parentNode = currBlock.parentNode.parentNode;
+            let group_title = (parentNode.id === 'intro-wrap') ? OTHER: parentNode.children[1].innerHTML;
+            if (group_title === OTHER) {
+                tasks.removeChild(currBlock);
+            } else {
+                group_tasks.removeChild(currBlock);
+            }
         }
         currBlock.style.cursor = 'grab';
     }
@@ -174,11 +183,14 @@ const add_task_btn = document.getElementById('add-task-btn');
 add_task_btn.addEventListener('click', function() {
     let name = task_name.value.trim();
     let src = task_src.value.trim();
-    let type = task_type.value.trim();
-    if (addTask(name, src, type)) {
-        updateStorage();
+    let type = task_type.value.trim() || 'basic';
+    if (!NOTES[OTHER][name] && addTask(name, src, type)) {
+        updateStorage(op='add', info=[name, src, type]);
+        intro_wrap.classList.remove('hide-section');
+        task_adder.classList.remove('show-section');
     }
 });
+
 
 const group_section = document.getElementById('group-section');
 
@@ -186,6 +198,7 @@ const task_adder = document.getElementById('new-task-section');
 const task_name = document.getElementById('task-name');
 const task_src  = document.getElementById('task-src');
 const task_type = document.getElementById('task-type');
+
 
 function addGroup(group_title) {
     if (!group_title) return false;
@@ -211,6 +224,7 @@ function addGroup(group_title) {
     tasks.appendChild(group);
 }
 
+
 function addTask(name, src, type, block=tasks, finished=false) {
     if (!name) return false;
 
@@ -218,7 +232,7 @@ function addTask(name, src, type, block=tasks, finished=false) {
 
     let new_task = document.createElement('div');
     new_task.classList.add('task-block', 'w-clearfix');
-    
+
     let checkbox = document.createElement('div');
     checkbox.classList.add('checkbox');
 
@@ -245,93 +259,113 @@ function addTask(name, src, type, block=tasks, finished=false) {
     }
 
     block.appendChild(new_task);
-
-    intro_wrap.classList.remove('hide-section');
-    task_adder.classList.remove('show-section');
     return true;
 }
 
-let notes = localStorage['notes'];
-if (!notes || notes === '[]') {
-    notes = [{group_title: '🛢️ Daily Tasks', group_notes: [
-                {name: '🔥 Finish Leetcode Daily',    src: 'https://leetcode.com/problemset/',                   type: ''},
-                {name: '👨‍💻 Open LocalHost',           src: 'http://localhost:8080/',                             type: ''},
-                {name: '💬 Talk with ChatGPT',        src: 'https://chat.openai.com/',                           type: ''},
-            ]},
-            {group_title: '🤖 ML Links', group_notes: [
-                {name: '🌍 Translate Some Text',      src: 'https://www.deepl.com/translator#en/ru/some%20text', type: ''},
-                {name: '📝 Summarize Youtube Videos', src: 'https://youtubesummarizer.com/',                     type: ''},
-            ]},
-            {group_title: '💹 Сrypto Links', group_notes: []},
-            {name: '⌚ Start Timer',   src: 'https://onlinetimer.ru/#!/', type: ''},
-            {name: '🎨 Yandex Images', src: 'https://yandex.ru/images/',  type: ''}
-            ]
+const OTHER = '%OTHER%';
+
+let NOTES = localStorage['notes'];
+if (!NOTES || NOTES === '{}') {
+    NOTES = {
+        '🛢️ Daily Tasks': {
+            '🔥 Finish Leetcode Daily': {src: 'https://leetcode.com/problemset/', type: 'basic', finished: true},
+            '👨‍💻 Open LocalHost':        {src: 'http://localhost:8080/',           type: 'basic'},
+            '💬 Talk with ChatGPT':     {src: 'https://chat.openai.com/',         type: 'basic'},
+        },
+        '🤖 ML Links': {
+            '🌍 Translate Some Text': {src: 'https://www.deepl.com/translator#en/ru/some%20text', type: 'basic'},
+            '📝 Summarize Youtube Videos': {src: 'https://youtubesummarizer.com/',                type: 'basic'},
+        },
+        '💹 Сrypto Links': {
+            '🍉 Arbuz': {src: 'https://t.me/wmclick_bot/click', type: 'basic'} // need to delete
+        },
+        [OTHER]: {
+            '⌚ Start Timer':     {src: 'https://onlinetimer.ru/#!/', type: 'basic'},
+            '🎨 Yandex Images':   {src: 'https://yandex.ru/images/',  type: 'basic'},
+            '📊 Check Out Excel': {src: 'https://docs.google.com/spreadsheets/d/1AhSWk6SeviV5QItrO1zD54VoN-t3yhjo-k3DN3qY7K0/edit?usp=sharing', type: 'basic'} // need to delete
+        }
+    }
 } else {
-    notes = JSON.parse(notes);
+    NOTES = JSON.parse(NOTES);
 }
 
+// Need some improvements!
 let CURR_DATE = new Date().toLocaleDateString("en-US");
-for (let note of notes) {
-    if (note.group_title) {
-        addGroup(note.group_title);
-        continue
-    } else if (note.finished) {
-        if (note.last_date) {
-            let day_changed = (CURR_DATE !== new Date(note.last_date).toLocaleDateString("en-US"));
-            if (day_changed) {
-                note.finished = false;
-                console.log('Day Changed! New day - New task');
+for (let group_title in NOTES) {
+    let group = NOTES[group_title];
+    if (group_title !== OTHER) {
+        for (let note in group) {
+            if (group[note].finished) {
+                if (group[note].last_date) {
+                    let day_changed = (CURR_DATE !== new Date(group[note].last_date).toLocaleDateString("en-US"));
+                    if (day_changed) {
+                        group[note].finished = false;
+                        console.log('Day Changed! New day - New task');
+                    }
+                }
+                group[note].last_date = CURR_DATE;
             }
         }
-        note.last_date = CURR_DATE;
+        addGroup(group_title);
+        continue;
     }
-    addTask(note.name, note.src, note.type, tasks, note.finished);
-}
 
-localStorage['notes'] = JSON.stringify(notes);
-
-
-function updateStorage() {
-    return false; // cos group problem
-    let notes = [];
-    for (let block of blocks) {
-        if (block.classList.contains('group-block')) {
-            continue; // temporary
-        }
-        let finished = block.children[0].classList.contains('active-btn');
-        let task_header = block.children[1].innerHTML;
-        let task_src = '';
-        if (block.children.length > 2) { // have source
-            task_src = block.children[2].href;
-        }
-        notes.push({name: task_header, src: task_src, type: '', finished: finished});
-    }
-    localStorage['notes'] = JSON.stringify(notes);
-    console.log(`Storage Updated! Size - ${notes.length}`)
-}
-
-function editNoteStorage(currBlock) {
-    let notes = JSON.parse(localStorage['notes']);
-    let task_header = currBlock.children[1].innerHTML;
-    for (let i = 0; i < notes.length; i++) {
-        if (notes[i].group_title) {
-            let group_notes = notes[i].group_notes
-            for (let j = 0; j < group_notes.length; j++) {
-                let note_header = group_notes[j].name;
-                if (note_header === task_header) {
-                    group_notes[j].finished = !group_notes[j].finished;
-                    break;
+    for (let note in group) {
+        if (group[note].finished) {
+            if (group[note].last_date) {
+                let day_changed = (CURR_DATE !== new Date(group[note].last_date).toLocaleDateString("en-US"));
+                if (day_changed) {
+                    group[note].finished = false;
+                    console.log('Day Changed! New day - New task');
                 }
             }
-            // need to stop here if already found!
+            group[note].last_date = CURR_DATE;
         }
-        let note_header = notes[i].name;
-        if (note_header === task_header) {
-            notes[i].finished = !notes[i].finished;
-            break;
+        addTask(note, group[note].src, group[note].type, tasks, group[note].finished);
+    }
+}
+
+localStorage['notes'] = JSON.stringify(NOTES);
+
+
+function updateStorage(op, info) {
+    if (op === 'add') {
+        NOTES[OTHER][info[0]] = {src: info[1], type: info[2]};
+        console.log(info, NOTES[OTHER]);
+    } else {
+        let parentNode = info.parentNode.parentNode;
+        let group_title = (parentNode.id === 'intro-wrap') ? OTHER: parentNode.children[1].innerHTML;
+        let task_header = info.children[1].innerHTML;
+        delete NOTES[group_title][task_header];
+        if (group_title !== OTHER && isEmpty(NOTES[group_title])) {
+            delete NOTES[group_title];
+            console.log(`Group ${group_title} was deleted!`);
         }
     }
+    localStorage['notes'] = JSON.stringify(NOTES);
+    console.log(`Storage Updated!`);
+    return;
+}
 
-    localStorage['notes'] = JSON.stringify(notes);
+
+function editNoteStorage(currBlock) {
+    let parentNode = currBlock.parentNode.parentNode;
+    let group_title = (parentNode.id === 'intro-wrap') ? OTHER: parentNode.children[1].innerHTML;
+    let task_header = currBlock.children[1].innerHTML;
+
+    NOTES[group_title][task_header].finished = !NOTES[group_title][task_header].finished;
+
+    localStorage['notes'] = JSON.stringify(NOTES);
     console.log(`Storage was Edit!`);
+    return;
+}
+
+
+function isEmpty(obj) {
+    for (const prop in obj) {
+        if (Object.hasOwn(obj, prop)) {
+            return false;
+        }
+    }
+    return true;
 }
