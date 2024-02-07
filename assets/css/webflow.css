@@ -2925,6 +2925,11 @@ figcaption {
   text-decoration: line-through;
 }
 
+.task-name.group-name {
+  height: 25px;
+  font-size: 18px;
+}
+
 .link-block {
   width: 24px;
   height: 24px;
@@ -2949,8 +2954,8 @@ figcaption {
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   padding: 15px 20px;
   transition: background-color .3s;
   display: flex;
@@ -2959,6 +2964,37 @@ figcaption {
 .task-block:hover {
   background-color: #193f64;
 }
+
+.task-block.group-block {
+  z-index: 2;
+  cursor: pointer;
+  margin-top: 0;
+  margin-bottom: -50px;
+  transition: transform .3s, background-color .3s;
+  position: relative;
+}
+
+.task-block.group-block.second-group-block {
+  z-index: 1;
+  margin-left: 5px;
+  margin-right: -5px;
+}
+
+/* .task-block.group-block.second-group-block:hover {
+  background-color: #2f6091;
+  transform: translate(0, 5px);
+} */
+
+.task-block.group-block.third-group-block {
+  z-index: 0;
+  margin-left: 10px;
+  margin-right: -10px;
+}
+
+/* .task-block.group-block.third-group-block:hover {
+  background-color: #3975b1;
+  transform: translate(0, 5px);
+} */
 
 .div-block-3, .div-block-4 {
   display: none;
@@ -3010,14 +3046,19 @@ figcaption {
 }
 
 .new-task-section.show-section {
+  z-index: 100;
   border: 1px solid #222;
   transform: none;
+}
+
+.new-task-section.group-section.show-section {
+  z-index: 3;
 }
 
 .heading {
   text-align: center;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   margin-left: 15px;
   font-size: 36px;
   font-weight: 500;
@@ -3039,6 +3080,7 @@ figcaption {
   text-align: center;
   background-color: #333;
   border-radius: 20px;
+  margin-top: 10px;
   transition: color .3s, background-color .3s, opacity .2s;
   position: relative;
 }
@@ -3076,6 +3118,10 @@ figcaption {
 
 .textarea:focus {
   border-color: #0081ff;
+}
+
+.div-block-5 {
+  margin-bottom: 70px;
 }
 
 @media screen and (max-width: 991px) {
@@ -3442,6 +3488,11 @@ figcaption {
     padding-bottom: 10px;
   }
 
+  .task-block.group-block {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
   .div-block-2 {
     order: 1;
     display: none;
@@ -3787,6 +3838,18 @@ figcaption {
 }
 
 #intro-wrap {user-select: none;}
+#group-section {user-select: none;}
 body::-webkit-scrollbar {display: none;}
 #new-task-section::-webkit-scrollbar {display: none;}
+#group-section::-webkit-scrollbar {display: none;}
 #intro-wrap::-webkit-scrollbar {display: none;}
+
+.first-group-block:hover ~ .second-group-block {
+  background-color: #2f6091;
+  transform: translate(0, 3px);
+}
+
+.first-group-block:hover ~ .third-group-block {
+  background-color: #3975b1;
+  transform: translate(0, 6px);
+}
