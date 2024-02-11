@@ -139,23 +139,29 @@ const intro_wrap = document.getElementById('intro-wrap');
 
 const task_adder_btn = document.getElementById('add-task');
 task_adder_btn.addEventListener('click', function() {
-    if (!intro_wrap.classList.contains('hide-section')) {
-        intro_wrap.classList.add('hide-section');
-        task_adder.classList.add('show-section');
-    } else {
+    if (intro_wrap.classList.contains('hide-section')) {
         intro_wrap.classList.remove('hide-section');
+    } else {
+        intro_wrap.classList.add('hide-section');
+    }
+    if (task_adder.classList.contains('show-section')) {
         task_adder.classList.remove('show-section');
+    } else {
+        task_adder.classList.add('show-section');
     }
 });
 
 const task_adder_btn_2 = document.getElementById('add-task-2');
 task_adder_btn_2.addEventListener('click', function() {
-    if (!intro_wrap.classList.contains('hide-section')) {
-        intro_wrap.classList.add('hide-section');
-        task_adder.classList.add('show-section');
-    } else {
+    if (intro_wrap.classList.contains('hide-section')) {
         intro_wrap.classList.remove('hide-section');
+    } else {
+        intro_wrap.classList.add('hide-section');
+    }
+    if (task_adder.classList.contains('show-section')) {
         task_adder.classList.remove('show-section');
+    } else {
+        task_adder.classList.add('show-section');
     }
 });
 
@@ -184,7 +190,8 @@ add_task_btn.addEventListener('click', function() {
     let name = task_name.value.trim();
     let src = task_src.value.trim();
     let type = task_type.value.trim() || 'basic';
-    if (!NOTES[OTHER][name] && addTask(name, src, type)) {
+    let group_title = group_section.classList.contains('show-section') ? group_section.children[1].innerHTML: OTHER;
+    if (!NOTES[group_title][name] && addTask(name, src, type, group_title == OTHER ? tasks: group_tasks)) {
         updateStorage(op='add', info=[name, src, type]);
         intro_wrap.classList.remove('hide-section');
         task_adder.classList.remove('show-section');
@@ -328,8 +335,11 @@ localStorage['notes'] = JSON.stringify(NOTES);
 
 function updateStorage(op, info) {
     if (op === 'add') {
-        NOTES[OTHER][info[0]] = {src: info[1], type: info[2]};
-        console.log(info, NOTES[OTHER]);
+        let group_title = OTHER;
+        if (group_section.classList.contains('show-section')) { // Add note to some group
+            group_title = group_section.children[1].innerHTML;
+        }
+        NOTES[group_title][info[0]] = {src: info[1], type: info[2]};
     } else {
         let parentNode = info.parentNode.parentNode;
         let group_title = (parentNode.id === 'intro-wrap') ? OTHER: parentNode.children[1].innerHTML;
